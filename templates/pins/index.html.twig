@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title 'Find all the best pins on Earth!' %}
+
+{% block body %}
+    {% if pins|length > 0 %}
+        <h1 class="text-center text-muted mb-4">{{ pluralize(pins|length, 'pin')}}</h1>
+                    
+        {% for row in pins|batch(3) %}
+            <div class="row mb-5">
+                {% for pin in row %}
+                    <div class="col-md-4">
+                        <article class="pin bg-white rounded shadow">
+                           <div class="mw-100 rounded-top overflow-hidden">
+                                <a href="{{path('app_pins_show', {id: pin.id}) }}">
+                                    <img src="{{ (pin.imageName ? vich_uploader_asset(pin) : asset("build/images/default.jpg")) | imagine_filter("squared_thumbnail_medium") }}" alt="{{ pin.title }}" class="w-100">
+                                </a>
+                           </div>
+                            <h2 class="h5 pl-3 pt-3"><a href="{{path('app_pins_show', {id: pin.id}) }}" class="text-secondary text-decoration-none">{{ pin.title }}</a></h2>
+                            <p class="pl-3 pb-3 text-muted"><small>Submitted by {{ pin.user.firstName }} {{ pin.user.lastName }}</small></p>
+                         </article>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="h1 mt-5 text-center">No pins yet. <a href="{{ path('app_pins_create') }}">Be the first!</a></p>    
+    {% endif %}
+{% endblock %}
